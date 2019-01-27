@@ -1,6 +1,7 @@
 package com.gianlucalimbi.retrofit2.adapter.livedata
 
 import androidx.lifecycle.LiveData
+import com.gianlucalimbi.blueprint.Resource
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import java.lang.reflect.ParameterizedType
@@ -14,10 +15,20 @@ class LiveDataCallAdapterFactory : CallAdapter.Factory() {
     }
 
     if (returnType !is ParameterizedType) {
-      throw IllegalStateException("LiveData return type must be parameterized as LiveData<Foo> or LiveData<out Foo>")
+      throw IllegalStateException("LiveData return type must be parameterized as LiveData<Resource<Foo>>")
     }
 
-    val responseType = getParameterUpperBound(0, returnType)
+    val resourceType = getParameterUpperBound(0, returnType)
+
+    if (getRawType(resourceType) != Resource::class.java) {
+      throw IllegalStateException("LiveData return type must be parameterized with Resource")
+    }
+
+    if (resourceType !is ParameterizedType) {
+      throw IllegalStateException("Resource return type must be parameterized as Resource<Foo>")
+    }
+
+    val responseType = getParameterUpperBound(0, resourceType)
     return LiveDataCallAdapter<Any>(responseType)
   }
 

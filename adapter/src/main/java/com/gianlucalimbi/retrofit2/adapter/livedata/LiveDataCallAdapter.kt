@@ -25,7 +25,9 @@ internal class LiveDataCallAdapter<T>(
         }
 
         if (response.isSuccessful) {
-          liveData.postValue(Resource.success(response.body()))
+          response.body()?.let {
+            liveData.postValue(Resource.success(it))
+          }
         } else {
           liveData.postValue(Resource.error(HttpException(response)))
         }
