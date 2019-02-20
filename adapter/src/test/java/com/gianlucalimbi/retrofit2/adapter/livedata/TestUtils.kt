@@ -22,4 +22,5 @@ internal fun <T> errorResponse(code: Int, message: String) = Response.error<T>(
         .message(message)
         .protocol(Protocol.HTTP_1_1)
         .request(Request.Builder().url("http://localhost/").build())
-        .build())
+        .build()
+)
